@@ -1,0 +1,1130 @@
+```{r}
+
+# Read the path into R
+
+files <- list.files (path       = "C:/Users/David Wood/Desktop/Capstone/Raw Data/FinalTextImportEnd", 
+                         pattern    = "*.csv", 
+                         full.names = T)
+
+library(dplyr)
+library(tidyr)
+
+# Read all csv files in the folder and create a list of dataframes
+  ldf <- lapply(files , read.csv)
+
+# Combine each dataframe in the list into a single dataframe
+  df <- do.call("rbind", ldf)
+  
+  df %>% separate(CLIENT.ID.TRANSACTION.TIME.SWIFT.MSG.TYPE.TRANSACTION.AMOUNT.COUNTRY, 
+                c("ClientID", "TransactionTime", "SwiftMsgType","TransactionAmount", "Country"))
+
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+
+# Seperate the columns by comma and rename
+
+df2 <- df %>% separate(CLIENT.ID.TRANSACTION.TIME.SWIFT.MSG.TYPE.TRANSACTION.AMOUNT.COUNTRY, 
+                c("ClientID", "TransactionTime", "SwiftMsgType","TransactionAmount", "Country"), ",")
+
+head(df2)
+```
+
+```{r}
+library(chron)
+
+# Change strings of the variables
+
+df2$ClientID <- as.numeric(df2$ClientID)
+df2$TransactionTime <- as.chron(df2$TransactionTime)
+df2$TransactionAmount <- as.numeric(df2$TransactionAmount)
+df2$Country <- as.factor(df2$Country)
+df2$SwiftMsgType <- as.factor(df2$SwiftMsgType)
+
+```
+
+```{r}
+
+# Check on the data
+
+str(df2)
+head(df2)
+
+```
+
+```{r}
+library(chron)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+
+# Create new columns based on current columns
+
+df2$TransactionAmountLog10 <- log10(df2$TransactionAmount)
+df2$Year <- year(df2$TransactionTime)
+df2$Month <- month(df2$TransactionTime)
+df2$DayofMonth <- mday(df2$TransactionTime)
+df2$DayofYear <- yday(df2$TransactionTime)
+df2$Hour <- hour(df2$TransactionTime)
+df2$Minute <- minute(df2$TransactionTime)
+df2$DayofWeek <- wday(df2$TransactionTime)
+df2$Second <-second(df2$TransactionTime)
+
+# Change strings of the variables
+
+df2$Year <- as.numeric(df2$Year)
+df2$DayofMonth <- as.numeric(df2$DayofMonth)
+df2$Hour <- as.numeric(df2$Hour)
+df2$Minute <- as.numeric(df2$Minute)
+
+
+```
+
+```{r}
+
+# Check on the data
+
+str(df2)
+head(df2)
+
+
+```
+
+```{r}
+
+# EDA of amount of last days, first days, and weekdays
+
+library(dplyr)
+
+sample <- sample_n(df2, 60000)
+
+sample
+
+table <- table(df2020103$DayofWeek)
+
+table
+
+table1 <- table(df2020103$Hour)
+
+table1
+
+table2 <- table(df2020103$Minute)
+
+table2
+
+table3 <- table(df2020103$Month)
+
+table3
+
+table4 <- table(df2020103$Second)
+
+table4
+```
+
+```{r}
+#Viewing the data and strings
+
+str(df2)
+head(df2)
+```
+
+```{r}
+
+#Finding all the unique country codes
+
+unique(df2$Country, incomparables = FALSE)
+
+```
+
+```{r}
+
+#Removing the non 2 digit country codes
+
+df3 <- df2[df2$Country != "", ] 
+df3 <- df3[df3$Country != 29, ]
+df3 <- df3[df3$Country != 20, ] 
+df3 <- df3[df3$Country != 68, ] 
+df3 <- df3[df3$Country != 32, ] 
+df3 <- df3[df3$Country != 23, ] 
+df3 <- df3[df3$Country != 39, ] 
+df3 <- df3[df3$Country != "1U", ] 
+df3 <- df3[df3$Country != 05, ] 
+df3 <- df3[df3$Country != 03, ] 
+df3 <- df3[df3$Country != 83, ] 
+df3 <- df3[df3$Country != 42, ] 
+df3 <- df3[df3$Country != 30, ] 
+df3 <- df3[df3$Country != 37, ] 
+df3 <- df3[df3$Country != 00, ] 
+df3 <- df3[df3$Country != 04, ] 
+df3 <- df3[df3$Country != 84, ] 
+df3 <- df3[df3$Country != 21, ] 
+df3 <- df3[df3$Country != 36, ] 
+df3 <- df3[df3$Country != 19, ] 
+df3 <- df3[df3$Country != 88, ] 
+df3 <- df3[df3$Country != 06, ] 
+df3 <- df3[df3$Country != 80, ] 
+df3 <- df3[df3$Country != 40, ] 
+df3 <- df3[df3$Country != 01, ] 
+df3 <- df3[df3$Country != 10, ] 
+df3 <- df3[df3$Country != 87, ] 
+df3 <- df3[df3$Country != 47, ] 
+df3 <- df3[df3$Country != 12, ] 
+df3 <- df3[df3$Country != 64, ] 
+df3 <- df3[df3$Country != 50, ] 
+df3 <- df3[df3$Country != 02, ] 
+df3 <- df3[df3$Country != 60, ] 
+df3 <- df3[df3$Country != 09, ] 
+df3 <- df3[df3$Country != 08, ] 
+df3 <- df3[df3$Country != 62, ] 
+df3 <- df3[df3$Country != 61, ] 
+df3 <- df3[df3$Country != "8J", ] 
+df3 <- df3[df3$Country != 65, ] 
+df3 <- df3[df3$Country != 22, ] 
+df3 <- df3[df3$Country != 71, ] 
+df3 <- df3[df3$Country != "1D", ] 
+df3 <- df3[df3$Country != "7A", ] 
+df3 <- df3[df3$Country != 70, ] 
+df3 <- df3[df3$Country != 51, ] 
+df3 <- df3[df3$Country != 35, ] 
+df3 <- df3[df3$Country != 45, ] 
+df3 <- df3[df3$Country != 77, ] 
+df3 <- df3[df3$Country != 85, ]
+df3 <- df3[df3$Country != "A1", ]
+df3 <- df3[df3$Country != 78, ]
+df3 <- df3[df3$Country != 52, ]
+df3 <- df3[df3$Country != 72, ]
+df3 <- df3[df3$Country != 63, ]
+df3 <- df3[df3$Country != 92, ]
+df3 <- df3[df3$Country != 76, ]
+df3 <- df3[df3$Country != 54, ]
+df3 <- df3[df3$Country != 71, ]
+df3 <- df3[df3$Country != 44, ]
+df3 <- df3[df3$Country != 66, ]
+df3 <- df3[df3$Country != 89, ]
+df3 <- df3[df3$Country != 93, ]
+df3 <- df3[df3$Country != 43, ]
+df3 <- df3[df3$Country != 16, ]
+df3 <- df3[df3$Country != 81, ]
+df3 <- df3[df3$Country != 11, ]
+df3 <- df3[df3$Country != 28, ]
+df3 <- df3[df3$Country != 98, ]
+df3 <- df3[df3$Country != 57, ]
+df3 <- df3[df3$Country != 94, ]
+df3 <- df3[df3$Country != 86, ]
+df3 <- df3[df3$Country != 56, ]
+df3 <- df3[df3$Country != 73, ]
+df3 <- df3[df3$Country != 79, ]
+df3 <- df3[df3$Country != 14, ]
+df3 <- df3[df3$Country != "A2", ]
+df3 <- df3[df3$Country != "8Z", ]
+df3 <- df3[df3$Country != 15, ]
+df3 <- df3[df3$Country != 55, ]
+df3 <- df3[df3$Country != 33, ]
+df3 <- df3[df3$Country != 49, ]
+df3 <- df3[df3$Country != 27, ]
+df3 <- df3[df3$Country != 41, ]
+df3 <- df3[df3$Country != 24, ]
+df3 <- df3[df3$Country != 46, ]
+df3 <- df3[df3$Country != "6J", ]
+df3 <- df3[df3$Country != 99, ]
+df3 <- df3[df3$Country != 82, ]
+df3 <- df3[df3$Country != "6Y", ]
+df3 <- df3[df3$Country != "0A", ]
+df3 <- df3[df3$Country != 95, ]
+df3 <- df3[df3$Country != 75, ]
+df3 <- df3[df3$Country != "U5", ]
+df3 <- df3[df3$Country != 25, ]
+df3 <- df3[df3$Country != 59, ]
+df3 <- df3[df3$Country != 26, ]
+df3 <- df3[df3$Country != "8U", ]
+df3 <- df3[df3$Country != 90, ]
+df3 <- df3[df3$Country != 67, ]
+df3 <- df3[df3$Country != 69, ]
+df3 <- df3[df3$Country != 27, ]
+df3 <- df3[df3$Country != "7U", ]
+df3 <- df3[df3$Country != "7G", ]
+df3 <- df3[df3$Country != 18, ]
+df3 <- df3[df3$Country != "8A", ]
+df3 <- df3[df3$Country != "A7", ]
+df3 <- df3[df3$Country != "8F", ]
+df3 <- df3[df3$Country != 74, ]
+df3 <- df3[df3$Country != 91, ]
+df3 <- df3[df3$Country != 31, ]
+df3 <- df3[df3$Country != 97, ]
+df3 <- df3[df3$Country != "7C", ]
+df3 <- df3[df3$Country != 53, ]
+df3 <- df3[df3$Country != "9K", ]
+df3 <- df3[df3$Country != "D9", ]
+df3 <- df3[df3$Country != "A6", ]
+df3 <- df3[df3$Country != "2/", ]
+df3 <- df3[df3$Country != "1/", ]
+df3 <- df3[df3$Country != "3A", ]
+
+```
+
+```{r}
+
+#Finding all the unique country codes a second time
+
+unique(df3$Country, incomparables = FALSE)
+
+```
+
+```{r}
+
+#Removing the non 2 digit country codes a second time
+
+df3 <- df3[df3$Country != "01", ]
+df3 <- df3[df3$Country != "05", ]
+df3 <- df3[df3$Country != "03", ]
+df3 <- df3[df3$Country != "00", ]
+df3 <- df3[df3$Country != "04", ]
+df3 <- df3[df3$Country != "06", ]
+df3 <- df3[df3$Country != "96", ]
+df3 <- df3[df3$Country != "02", ]
+df3 <- df3[df3$Country != "09", ]
+df3 <- df3[df3$Country != "08", ]
+df3 <- df3[df3$Country != "7J", ]
+df3 <- df3[df3$Country != "48", ]
+df3 <- df3[df3$Country != "07", ]
+df3 <- df3[df3$Country != "34", ]
+df3 <- df3[df3$Country != "", ]
+
+```
+
+```{r}
+
+#Finding all the unique country codes a third time
+
+unique(df3$Country, incomparables = FALSE)
+
+```
+
+```{r}
+
+# Looking at basic bar plots based on key features
+
+barplot(table, main="Day of Week",
+   xlab="Count", col = "grey")
+
+barplot(table1, main="Hour",
+   xlab="Count", col = "grey")
+
+barplot(table2, main="Minute",
+   xlab="Count", col = "grey")
+
+barplot(table3, main="Month",
+        xlab="Count", col = "grey")
+
+barplot(table4, main="Second",
+        xlab="Count", col = "grey")
+
+```
+
+```{r}
+
+# Summary of the total data frame
+
+summary(df3)
+
+```
+
+```{r}
+
+# Summary of the data frame of only swift message type 103
+
+df3103 <- subset(df3, SwiftMsgType=="103")
+summary(df3103)
+
+```
+
+```{r}
+
+# Summary of the data frame of only swift message type 202
+
+df3202 <- subset(df3, SwiftMsgType=="202")
+summary(df3202)
+
+```
+
+```{r}
+
+# Removing any year values before or after 2020
+
+df2020 <- subset(df3, Year=="2020")
+summary(df2020)
+
+```
+
+```{r}
+
+# Summary of the data frame of only swift message type 103
+
+df2020103 <- subset(df2020, SwiftMsgType=="103")
+summary(df2020103)
+
+```
+
+```{r}
+
+# Summary of the data frame of only swift message type 202
+
+df2020202 <- subset(df2020, SwiftMsgType=="202")
+summary(df2020202)
+
+```
+
+```{r}
+
+# Descriptive Statistics of the 2020 data frame
+
+library(pastecs)
+stat.desc(df2020)
+
+
+```
+
+```{r}
+
+# Descriptive Statistics of the 2020 swift code message 103 data frame
+
+library(pastecs)
+
+stat.desc(df2020103)
+
+```
+
+```{r}
+
+# Descriptive Statistics of the 2020 swift code message 202 data frame
+
+stat.desc(df2020202)
+
+```
+
+```{r}
+
+# EDA of amount of last days, first days, and weekdays of 2020
+
+library(dplyr)
+
+sample <- sample_n(df2020, 50000)
+
+sample
+
+table5 <- table(sample$DayofWeek)
+
+table5
+
+table6 <- table(sample$Hour)
+
+table6
+
+table7 <- table(sample$Minute)
+
+table7
+
+table8 <- table(sample$Month)
+
+table8
+
+table9 <- table(sample$Second)
+
+table9
+```
+
+
+
+
+```{r}
+
+# Looking at basic bar plots based on key features
+
+# EDA of amount of last days, first days, and weekdays of 2020
+
+barplot(table5, main="Day of Week",
+   xlab="Count")
+
+barplot(table6, main="Hour",
+   xlab="Count")
+
+barplot(table7, main="Minute",
+   xlab="Counts")
+
+barplot(table8, main="Month",
+        xlab="Counts")
+
+barplot(table9, main="Second",
+        xlab="Counts")
+
+```
+
+
+```{r}
+
+# EDA of amount of last days, first days, and weekdays of 103
+
+library(dplyr)
+
+sample1 <- sample_n(df2020103, 50000)
+
+sample1
+
+table10 <- table(sample1$DayofWeek)
+
+table10
+
+table11 <- table(sample1$Hour)
+
+table11
+
+table12 <- table(sample1$Minute)
+
+table12
+
+table13 <- table(sample1$Month)
+
+table13
+
+table14 <- table(sample1$Second)
+
+table14
+```
+
+
+
+
+```{r}
+
+# Looking at basic bar plots based on key features of 103
+
+barplot(table10, main="Day of Week",
+   xlab="Count")
+
+barplot(table11, main="Hour",
+   xlab="Count")
+
+barplot(table12, main="Minute",
+   xlab="Counts")
+
+barplot(table3, main="Month",
+        xlab="Counts")
+
+barplot(table14, main="Second",
+        xlab="Counts")
+
+```
+
+
+```{r}
+
+# EDA of amount of last days, first days, and weekdays of 202
+
+library(dplyr)
+
+sample2 <- sample_n(df2020202, 50000)
+
+sample2
+
+table15 <- table(sample2$DayofWeek)
+
+table15
+
+table16 <- table(sample2$Hour)
+
+table16
+
+table17 <- table(sample2$Minute)
+
+table17
+
+table18 <- table(sample2$Month)
+
+table18
+
+table19 <- table(sample2$Second)
+
+table19
+
+```
+
+
+
+
+```{r}
+
+# Looking at basic bar plots based on key features of 202
+
+barplot(table15, main="Day of Week",
+   xlab="Count")
+
+barplot(table16, main="Hour",
+   xlab="Count")
+
+barplot(table17, main="Minute",
+   xlab="Counts")
+
+barplot(table18, main="Month",
+        xlab="Counts")
+
+barplot(table19, main="Second",
+        xlab="Counts")
+
+```
+
+```{r}
+
+hist(df2020$TransactionAmountLog10)
+
+```
+
+
+```{r}
+
+hist(df2020103$TransactionAmountLog10)
+
+```
+
+
+```{r}
+
+hist(df2020202$TransactionAmountLog10)
+
+```
+
+```{r}
+
+df2020103$CountryBinary <- ifelse(df2020103$Country == "US", 1, 2)
+
+head(df2020103)
+
+```
+
+```{r}
+
+df2020103Select <- df2020103[, c("ClientID","TransactionAmountLog10","Month","Hour","Minute","DayofWeek","CountryBinary")]
+head(df2020103Select)
+
+```
+
+```{r}
+
+df2020103Select$Month <- as.numeric(df2020103Select$Month)
+df2020103Select$Hour <- as.numeric(df2020103Select$Hour)
+df2020103Select$Minute <- as.numeric(df2020103Select$Minute)
+df2020103Select$DayofWeek <- as.numeric(df2020103Select$DayofWeek)
+df2020103Select$CountryBinary <- as.numeric(df2020103Select$CountryBinary)
+
+```
+
+```{r}
+
+library(EnvStats)
+summaryStats(df2020$TransactionAmount, quartiles = TRUE)
+
+```
+
+```{r}
+
+library(EnvStats)
+summaryStats(df2020103$TransactionAmount, quartiles = TRUE)
+
+```
+
+```{r}
+
+library(EnvStats)
+summaryStats(df2020202$TransactionAmount, quartiles = TRUE)
+
+```
+
+```{r}
+t <- hist(df2020$TransactionAmount, ylim=c(0,600000), breaks = 9)
+text(t$mids,t$counts,labels=t$counts, adj=c(0.5, -0.5))
+s <- hist(df2020$TransactionAmountLog10)
+
+w <- hist(df2020103$TransactionAmount, ylim=c(0,600000), breaks = 9)
+text(w$mids,w$counts,labels=w$counts, adj=c(0.5, -0.5))
+v <- hist(df2020103$TransactionAmountLog10)
+
+d <- hist(df2020202$TransactionAmount, ylim=c(0,600000), breaks = 9)
+text(d$mids,d$counts,labels=d$counts, adj=c(0.5, -0.5))
+c <- hist(df2020202$TransactionAmountLog10)
+```
+
+```{r}
+
+df2020103SelectDummy <- df2020103Select
+
+df2020103SelectDummy$CountryBinary <- ifelse(df2020103Select$Country == "1", "US", "OTHER")
+
+df2020103SelectDummy$CountryBinary <- as.factor(df2020103SelectDummy$CountryBinary)
+
+head(df2020103SelectDummy)
+
+str(df2020103SelectDummy)
+
+```
+
+```{r}
+
+df2020103SelectDummy$DayofWeekBinary <- ifelse(df2020103SelectDummy$DayofWeek == 1 | df2020103SelectDummy$DayofWeek == 7, "WEEKEND", "WEEKDAY")
+
+df2020103SelectDummy$HourBinary <- ifelse(df2020103SelectDummy$Hour >= 9 & df2020103SelectDummy$Hour <=21, "WORKHOURS", "NONWORKHOURS")
+
+df2020103SelectDummy$DayofWeekBinary <- as.factor(df2020103SelectDummy$DayofWeekBinary)
+
+df2020103SelectDummy$HourBinary <- as.factor(df2020103SelectDummy$HourBinary)
+
+df2020103SelectDummy
+
+str(df2020103SelectDummy)
+
+```
+
+```{r}
+
+df2020103SelectDummyFinal <- df2020103SelectDummy[, c("ClientID","TransactionAmountLog10","Month","Minute","CountryBinary", "DayofWeekBinary", "HourBinary")]
+head(df2020103SelectDummyFinal)
+
+```
+
+```{r}
+
+# dummy country binary
+
+for(unique_value in unique(df2020103SelectDummyFinal$CountryBinary)){
+ 
+df2020103SelectDummyFinal[paste("Country", unique_value, sep = ".")] <- ifelse(df2020103SelectDummyFinal$CountryBinary == unique_value, 1, 0)
+
+} 
+
+# dummy month
+
+for(unique_value in unique(df2020103SelectDummyFinal$Month)){
+ 
+df2020103SelectDummyFinal[paste("Month", unique_value, sep = ".")] <- ifelse(df2020103SelectDummyFinal$Month == unique_value, 1, 0)
+
+}
+
+# dummy minute
+
+for(unique_value in unique(df2020103SelectDummyFinal$Minute)){
+ 
+df2020103SelectDummyFinal[paste("Minute", unique_value, sep = ".")] <- ifelse(df2020103SelectDummyFinal$Minute == unique_value, 1, 0)
+
+}
+
+# dummy ClientID
+
+for(unique_value in unique(df2020103SelectDummyFinal$ClientID)){
+ 
+df2020103SelectDummyFinal[paste("ClientID", unique_value, sep = ".")] <- ifelse(df2020103SelectDummyFinal$ClientID == unique_value, 1, 0)
+
+}
+
+# dummy DayofWeek
+
+for(unique_value in unique(df2020103SelectDummyFinal$DayofWeekBinary)){
+ 
+df2020103SelectDummyFinal[paste("DayofWeekBinary", unique_value, sep = ".")] <- ifelse(df2020103SelectDummyFinal$DayofWeekBinary == unique_value, 1, 0)
+
+}
+
+# dummy HourReal
+
+for(unique_value in unique(df2020103SelectDummyFinal$HourBinary)){
+ 
+df2020103SelectDummyFinal[paste("HourBinary", unique_value, sep = ".")] <- ifelse(df2020103SelectDummyFinal$HourBinary == unique_value, 1, 0)
+
+}
+
+str(df2020103SelectDummyFinal)
+
+df2020103SelectDummyFinal
+
+```
+
+```{r}
+
+df2020103SelectDummyFinal$Month <- NULL
+df2020103SelectDummyFinal$HourBinary <- NULL
+df2020103SelectDummyFinal$Minute <- NULL
+df2020103SelectDummyFinal$DayofWeekBinary <- NULL
+df2020103SelectDummyFinal$CountryBinary <- NULL
+df2020103SelectDummyFinal$ClientID <- NULL
+
+df2020103SelectDummyFinal
+```
+
+```{r}
+
+# 103 Dummy
+
+library(DDoutlier)
+
+# Find outliers by setting an optional k
+
+outlier_score103DummyFinal <- LOF(df2020103SelectDummyFinal, k=10)
+
+# Sort and find index for most outlying observations
+
+names(outlier_score103DummyFinal) <- 1:nrow(df2020103SelectDummyFinal)
+
+sort(outlier_score103DummyFinal, decreasing = TRUE)
+
+outlier_score103DummyFinal
+
+```
+
+```{r}
+
+# Inspect the distribution of outlier scores
+
+
+
+Dummy103histFinal <- hist(outlier_score103DummyFinal, ylim=c(0,150000))
+
+text(Dummy103histFinal$mids,Dummy103histFinal$counts,labels=Dummy103histFinal$counts, adj=c(0.5, -0.5))
+
+```
+
+```{r}
+
+df2020103SelectDummyOutlierScoresFinal <- cbind(df2020103SelectDummyFinal, outlier_score103DummyFinal)
+
+str(df2020103SelectDummyOutlierScoresFinal)
+
+head(df2020103SelectDummyOutlierScoresFinal)
+
+```
+
+```{r}
+
+df2020103SelectDummyOutlierScoresFinal <- cbind(df2020103SelectDummyOutlierScoresFinal, df2020103)
+
+str(df2020103SelectDummyOutlierScoresFinal)
+
+head(df2020103SelectDummyOutlierScoresFinal)
+
+```
+
+```{r}
+
+library(chron)
+
+df2020103SelectDummyOutlierScoresFinal$TransactionTime <- as.chron(df2020103SelectDummyOutlierScoresFinal$TransactionTime) 
+
+```
+
+```{r}
+
+df2020103SelectDummyOutliersFinal <- subset(df2020103SelectDummyOutlierScoresFinal, outlier_score103DummyFinal
+ >= 20)
+
+df2020103SelectDummyOutliersFinal
+
+```
+
+```{r}
+
+# LOF Final Anomolies
+
+df2020103SelectDummyOutliersCleanFinal <- df2020103SelectDummyOutliersFinal[, c("ClientID","TransactionAmountLog10","TransactionAmount","TransactionTime","Country","outlier_score103DummyFinal")]
+
+df2020103SelectDummyOutliersCleanFinal
+
+```
+
+```{r}
+
+library(solitude)
+
+# initiate an isolation forest
+
+index = sample(ceiling(nrow(df2020103SelectDummyFinal)))
+
+iso = isolationForest$new(sample_size = length(index))
+
+iso$fit(df2020103SelectDummyFinal[index, ])
+
+# Obtain anomaly scores
+
+scores_train = iso$predict(df2020103SelectDummyFinal[index, ])
+
+scores_train[order(anomaly_score, decreasing = TRUE)]
+
+```
+
+```{r}
+
+df2020103SelectDummyFinalIRF <- cbind(df2020103SelectDummyFinal, scores_train)
+
+head(df2020103SelectDummyFinalIRF)
+
+```
+
+```{r}
+
+df2020103SelectDummyFinalIRF <- cbind(df2020103SelectDummyFinalIRF, df2020103)
+
+str(df2020103SelectDummyFinalIRF)
+
+head(df2020103SelectDummyFinalIRF)
+
+```
+
+```{r}
+
+df2020103SelectDummyIRFOutliersFinal <- subset(df2020103SelectDummyFinalIRF, anomaly_score >= .75)
+
+df2020103SelectDummyIRFOutliersFinal
+
+```
+
+```{r}
+
+# IRF Final Anomolies
+
+library(chron)
+
+df2020103SelectDummyIRFOutliersCleanFinal <- df2020103SelectDummyIRFOutliersFinal[, c("ClientID","TransactionAmountLog10","TransactionAmount","TransactionTime","Country","anomaly_score", "DayofWeekBinary.WEEKEND", "HourBinary.NONWORKHOURS", "Hour", "Minute")]
+
+df2020103SelectDummyIRFOutliersCleanFinal$TransactionTime <- as.chron(df2020103SelectDummyIRFOutliersCleanFinal$TransactionTime)
+
+df2020103SelectDummyIRFOutliersCleanFinal
+
+```
+
+
+
+```{r}
+dfhour23 <- subset(df2020103, Hour==23)
+
+dfhour23
+```
+
+
+```{r}
+dfsubsettest <- subset(df2020103, df2020103$CountryBinary==1 & (df2020103$Hour <= 9 | df2020103$Hour >= 21))
+
+dfsubsettest
+```
+
+
+```{r}
+
+df2020103SelectDummyOutliersCleanFinalLess13 <- subset(df2020103SelectDummyOutliersCleanFinal, ClientID!=13)
+
+hist(df2020103SelectDummyOutliersCleanFinalLess13$TransactionAmountLog10, main="LOF Anomaly Common Log Transaction Amounts Less Client 13", col = "grey", xlab="Common Log Transaction Amount")
+
+hist(df2020103SelectDummyOutliersCleanFinal$TransactionAmountLog10, main="LOF Anomaly Common Log Transaction Amounts", col = "grey", xlab="Common Log Transaction Amount")
+
+hist(df2020103SelectDummyIRFOutliersCleanFinal$TransactionAmountLog10, main="IRF Anomaly Common Log Transaction Amounts", col = "grey", xlab="Common Log Transaction Amount")
+
+```
+
+```{r}
+
+df2020103SelectDummyOutlierScoresFinal$outlier_score103DummyFinal <- ifelse(df2020103SelectDummyOutlierScoresFinal$outlier_score103DummyFinal >= 20, 30, 10)
+
+df2020103SelectDummyFinalIRF$anomaly_score <- ifelse(df2020103SelectDummyFinalIRF$anomaly_score >= .75, .80, .70)
+
+LOFOUT <- hist(df2020103SelectDummyOutlierScoresFinal$outlier_score103DummyFinal, main="LOF Outlier Score Counts", col = "grey", xlab="LOF Outlier Score", breaks = 2, ylim=c(0,140000))
+text(LOFOUT$mids,LOFOUT$counts,labels=LOFOUT$counts, adj=c(0.5, -0.5))
+
+IRFOUT <- hist(df2020103SelectDummyFinalIRF$anomaly_score, main="IRF Outlier Score Counts", col = "grey", xlab="IRF Outlier Score", breaks = 2, ylim=c(0,140000))
+text(IRFOUT$mids,IRFOUT$counts,labels=IRFOUT$counts, adj=c(0.5, -0.5))
+
+```
+
+
+
+```{r}
+
+# 1st Iteration Visuals
+
+# Figure 1
+
+t <- hist(df2020$TransactionAmount, ylim=c(0,600000), breaks = 9,main = "Histogram of Log10Transaction Amounts", xlab = "Log10Transaction Amount", col = "grey")
+
+
+#Figure 2
+
+t <- hist(df2020$TransactionAmount, ylim=c(0,600000), breaks = 9,main = "Histogram of Log10Transaction Amounts", xlab = "Log10Transaction Amount", col = "grey")
+text(t$mids,t$counts,labels=t$counts, adj=c(0.5, -0.5))
+s <- hist(df2020$TransactionAmountLog10,main = "Histogram of Log10Transaction Amounts", xlab = "Log10Transaction Amount", col = "grey")
+
+# Figure 3
+
+w <- hist(df2020103$TransactionAmount, ylim=c(0,600000), breaks = 9,main = "Histogram of Log10Transaction Amounts for Swift Message Type 103", xlab = "Log10Transaction", col = "grey")
+text(w$mids,w$counts,labels=w$counts, adj=c(0.5, -0.5))
+v <- hist(df2020103$TransactionAmountLog10,main = "Histogram of Log10Transaction Amounts for Swift Message Type 103", xlab = "Log10Transaction Amount", col = "grey")
+
+d <- hist(df2020202$TransactionAmount, ylim=c(0,600000), breaks = 9,main = "Histogram of Log10Transaction Amounts for Swift Message Type 202", xlab = "Log10Transaction Amount", col = "grey")
+text(d$mids,d$counts,labels=d$counts, adj=c(0.5, -0.5))
+c <- hist(df2020202$TransactionAmountLog10,main = "Histogram of Log10Transaction Amounts for Swift Message Type 202", xlab = "Log10Transaction Amount", col = "grey")
+
+# Figure 4
+
+table10 <- table(sample1$DayofWeek)
+   table10
+table11 <- table(sample1$Hour)
+   table11
+table12 <- table(sample1$Minute)
+   table12
+table13 <- table(sample1$Month)
+   table13
+
+barplot(table10, main="Day of Week",
+   xlab="Count")
+barplot(table11, main="Hour",
+   xlab="Count")
+barplot(table12, main="Minute",
+   xlab="Counts")
+barplot(table3, main="Month",
+   xlab="Counts")
+
+# Figure 5
+
+hist(df2020103SelectDummyOutliersCleanFinal$TransactionAmountLog10, main="LOF Anomaly Common Log Transaction Amounts", col = "grey", xlab="Common Log Transaction Amount")
+
+hist(df2020103SelectDummyOutliersCleanFinalLess13$TransactionAmountLog10, main="LOF Anomaly Common Log Transaction Amounts Less Client 13", col = "grey", xlab="Common Log Transaction Amount")
+
+# Figure 6
+
+hist(df2020103SelectDummyIRFOutliersCleanFinal$TransactionAmountLog10, main="IRF Anomaly Common Log Transaction Amounts", col = "grey", xlab="Common Log Transaction Amount")
+
+```
+
+```{r}
+str(df2020103)
+str(df2020202)
+
+df2020103$DayofWeek <- as.factor(df2020103$DayofWeek)
+
+df2020202$DayofWeek <- as.factor(df2020202$DayofWeek)
+
+df2020202$Minute <- as.numeric(df2020202$Minute)
+```
+
+
+```{r}
+
+# Final Iteration Visuals
+
+library(ggplot2)
+library(scales)
+library(ggthemes)
+
+# Figure 1
+
+Figure1 <- ggplot(df2020, aes(x = TransactionAmount)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("Histogram of Transaction Amounts") + xlab("Transaction Amount (USD)") + ylab("Frequency")
+    Figure1 + scale_x_continuous(labels = comma, expand = c(0,0), limits = c(0,17500000000)) +    scale_y_continuous(labels = comma, expand = c(0,0), limits = c(0,550000)) + theme(plot.background = element_rect(fill = 'grey'),                                                                       plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+ 
+# Figure 2
+ 
+Figure2a <- ggplot(df2020, aes(x = TransactionAmount)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("Histogram of Transaction Amounts") + xlab("Transaction Amount (USD)") + ylab("Frequency")
+    Figure2a + scale_x_continuous(labels = comma, expand = c(0,0), limits = c(0,17500000000)) +    scale_y_continuous(labels = comma, expand = c(0,0), limits = c(0,550000)) + theme(plot.background = element_rect(fill = 'grey'),                                                                       plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+    
+Figure2b <- ggplot(df2020, aes(x = TransactionAmountLog10)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("Histogram of Common Log Transaction Amounts") + xlab("Common Log Transaction Amount") + ylab("Frequency") 
+    Figure2b + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+
+# Figure 3
+    
+Figure3a <- ggplot(df2020103, aes(x = TransactionAmount)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("Swift Message Type 103 Transaction Amounts") + xlab("Transaction Amount (USD)") + ylab("Frequency")
+    Figure3a + scale_x_continuous(labels = comma, expand = c(0,0), limits = c(0,17500000000)) +    scale_y_continuous(labels = comma, expand = c(0,0), limits = c(0,425000)) + theme(plot.background = element_rect(fill = 'grey'),                                                                       plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+    
+Figure3b <- ggplot(df2020103, aes(x = TransactionAmountLog10)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("Swift Message Type 103 Common Log Transaction Amounts") + xlab("Common Log Transaction Amount") + ylab("Frequency") 
+    Figure3b + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+
+Figure3c <- ggplot(df2020202, aes(x = TransactionAmount)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("Swift Message Type 202 Transaction Amounts") + xlab("Transaction Amount (USD)") + ylab("Frequency")
+    Figure3c + scale_x_continuous(labels = comma, expand = c(0,0), limits = c(0,17500000000)) +    scale_y_continuous(labels = comma, expand = c(0,0), limits = c(0,425000)) + theme(plot.background = element_rect(fill = 'grey'),                                                                       plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+    
+Figure3d <- ggplot(df2020202, aes(x = TransactionAmountLog10)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("Swift Message Type 202 Common Log Transaction Amounts") + xlab("Common Log Transaction Amount") + ylab("Frequency") 
+    Figure3d + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+    
+# Figure 4
+    
+Figure4a <- ggplot(df2020103, aes(x=factor(DayofWeek))) + geom_bar(stat="count", width=0.7, color="black", fill="steelblue")+ ggtitle("Swift Message Type 103 Day of Week Counts") + xlab("Day Of Week") + ylab("Count")
+   Figure4a + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+   
+Figure4b <- ggplot(df2020103, aes(x=factor(Hour))) + geom_bar(stat="count", width=0.7, color="black", fill="steelblue")+ ggtitle("Swift Message Type 103 Hour Counts") + xlab("Hour") + ylab("Count")
+   Figure4b + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+   
+Figure4c <- ggplot(df2020103, aes(x=factor(Minute))) + geom_bar(stat="count", width=0.7, color="black", fill="steelblue")+ ggtitle("Swift Message Type 103 Minute Counts") + xlab("Minute") + ylab("Count")
+   Figure4c + scale_x_discrete(breaks = seq(0,60,5)) + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))  
+   
+Figure4d <- ggplot(df2020103, aes(x=factor(Month))) + geom_bar(stat="count", width=0.7, color="black", fill="steelblue")+ ggtitle("Swift Message Type 103 Month Counts") + xlab("Month") + ylab("Count")
+   Figure4d + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+   
+# Figure 5
+   
+Figure5a <- ggplot(df2020103SelectDummyOutliersCleanFinal, aes(x = TransactionAmountLog10)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("LOF Anomaly Common Log Transaction Amounts") + xlab("Common Log Transaction Amount") + ylab("Frequency") 
+    Figure5a + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+    
+Figure5b <- ggplot(df2020103SelectDummyOutliersCleanFinalLess13, aes(x = TransactionAmountLog10)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("LOF Anomaly Common Log Transaction Amounts Less Client 13") + xlab("Common Log Transaction Amount") + ylab("Frequency") 
+    Figure5b + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
+
+# Figure 6
+
+Figure6 <- ggplot(df2020103SelectDummyIRFOutliersCleanFinal, aes(x = TransactionAmountLog10)) + geom_histogram(color="white", fill="steelblue",boundary=0)  + ggtitle("IRF Anomaly Common Log Transaction Amounts") + xlab("Common Log Transaction Amount") + ylab("Frequency") 
+    Figure6 +    scale_y_continuous(breaks = seq(0,10,3)) + theme(plot.background = element_rect(fill = 'grey'),                                plot.title = element_text(face="bold"),                                
+axis.title.x = element_text(face="bold"),
+axis.title.y = element_text(face="bold"),
+axis.text.x = element_text(color = "black"),
+axis.text.y = element_text(color = "black"))
